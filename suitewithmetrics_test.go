@@ -3,6 +3,7 @@ package testifystats
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -15,11 +16,16 @@ type SampleMetricsSuite struct {
 }
 
 type suiteUnderTest struct {
+	suite.Suite
 	SuiteWithMetrics
 }
 
+func (s *suiteUnderTest) Test_Something() {
+	s.Equal(1, 1)
+}
+
 func (s *SampleMetricsSuite) Test_ANewSuiteHasAnExecutionIdAndStartTime() {
-	suiteUnderTest := suiteUnderTest{}
+	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.SetupSuite()
 
 	s.NotEmpty(suiteUnderTest.Execution.Id)
@@ -29,14 +35,14 @@ func (s *SampleMetricsSuite) Test_ANewSuiteHasAnExecutionIdAndStartTime() {
 }
 
 func (s *SampleMetricsSuite) Test_TearDownSuiteUpdatesTheExecutionEndTime() {
-	suiteUnderTest := suiteUnderTest{SuiteWithMetrics{}}
+	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.TearDownSuite()
 
 	s.NotZero(suiteUnderTest.Execution.End)
 }
 
 func (s *SampleMetricsSuite) Test_BeforeTest_CreatesNewStats() {
-	suiteUnderTest := suiteUnderTest{SuiteWithMetrics{}}
+	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.SetupSuite()
 	suiteUnderTest.BeforeTest("mySuite", "myTest")
 
@@ -50,7 +56,7 @@ func (s *SampleMetricsSuite) Test_BeforeTest_CreatesNewStats() {
 }
 
 func (s *SampleMetricsSuite) Test_AfterTest_UpdatesStats() {
-	suiteUnderTest := suiteUnderTest{SuiteWithMetrics{}}
+	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.SetupSuite()
 	suiteUnderTest.BeforeTest("mySuite", "myTest")
 	suiteUnderTest.AfterTest("mySuite", "myTest")
@@ -58,4 +64,17 @@ func (s *SampleMetricsSuite) Test_AfterTest_UpdatesStats() {
 	actualStats := suiteUnderTest.Stats["myTest"]
 
 	s.NotZero(actualStats.End)
+}
+
+// To test a suite, ironically, this test can't be in a suite.Suite.
+// Bad things happen when you test a suite.Suite inside a suite.
+func Test_RunningTheSuiteWillGenerateStats(t *testing.T) {
+	suiteToTest := new(suiteUnderTest)
+
+	suite.Run(t, suiteToTest)
+
+	assert.NotEmpty(t, suiteToTest.Execution.Id)
+	assert.NotZero(t, suiteToTest.Execution.Start)
+	assert.NotZero(t, suiteToTest.Execution.End)
+	assert.NotNil(t, suiteToTest.Stats)
 }
