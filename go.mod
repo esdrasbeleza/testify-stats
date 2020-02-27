@@ -1,4 +1,4 @@
-module github.com/esdrasbeleza/go-base
+module github.com/esdrasbeleza/testify-stats
 
 go 1.13.4
 
