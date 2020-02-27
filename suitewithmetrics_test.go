@@ -76,5 +76,5 @@ func Test_RunningTheSuiteWillGenerateStats(t *testing.T) {
 	assert.NotEmpty(t, suiteToTest.Execution.Id)
 	assert.NotZero(t, suiteToTest.Execution.Start)
 	assert.NotZero(t, suiteToTest.Execution.End)
-	assert.NotNil(t, suiteToTest.Stats)
+	assert.NotNil(t, suiteToTest.Stats["Test_Something"])
 }
