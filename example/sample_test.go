@@ -22,7 +22,7 @@ type TestSuite struct {
 func (s *TestSuite) SetupSuite() {
 	s.SuiteWithMetrics.SetupSuite()
 	s.SuiteWithMetrics.OnFinish = func(e testifystats.Execution, s map[string]testifystats.Stats) {
-		filename := fmt.Sprintf("test_%s.log", e.Id)
+		filename := fmt.Sprintf("test_%d.log", time.Now().Unix())
 		file, _ := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		defer file.Close()
 
