@@ -2,8 +2,6 @@ package testifystats
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type SuiteWithMetrics struct {
@@ -31,7 +29,6 @@ func (sm *SuiteWithMetrics) TearDownSuite() {
 
 func (sm *SuiteWithMetrics) BeforeTest(suiteName, testName string) {
 	sm.Stats[testName] = Stats{
-		Id:        uuid.New().String(),
 		SuiteName: suiteName,
 		Testname:  testName,
 		Start:     time.Now(),

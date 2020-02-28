@@ -57,7 +57,6 @@ func Test_BeforeTest_CreatesNewStats(t *testing.T) {
 
 	actualStats := suiteUnderTest.Stats["myTest"]
 
-	assert.NotEmpty(t, actualStats.Id)
 	assert.Equal(t, "mySuite", actualStats.SuiteName)
 	assert.Equal(t, "myTest", actualStats.Testname)
 	assert.NotZero(t, actualStats.Start)
