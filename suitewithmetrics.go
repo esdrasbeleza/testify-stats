@@ -35,9 +35,10 @@ func (sm *SuiteWithMetrics) BeforeTest(suiteName, testName string) {
 	}
 }
 
-func (sm *SuiteWithMetrics) AfterTest(suiteName, testName string) {
+func (sm *SuiteWithMetrics) AfterTest(suiteName, testName string, success bool) {
 	stats := sm.Stats[testName]
 	stats.End = time.Now()
+	stats.Success = success
 
 	sm.Stats[testName] = stats
 }

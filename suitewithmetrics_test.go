@@ -67,11 +67,12 @@ func Test_AfterTest_UpdatesStats(t *testing.T) {
 	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.SetupSuite()
 	suiteUnderTest.BeforeTest("mySuite", "myTest")
-	suiteUnderTest.AfterTest("mySuite", "myTest")
+	suiteUnderTest.AfterTest("mySuite", "myTest", true)
 
 	actualStats := suiteUnderTest.Stats["myTest"]
 
 	assert.NotZero(t, actualStats.End)
+	assert.True(t, actualStats.Success)
 }
 
 func Test_RunningTheSuiteWillGenerateStats(t *testing.T) {

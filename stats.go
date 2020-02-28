@@ -7,4 +7,5 @@ type Stats struct {
 	Testname  string
 	Start     time.Time
 	End       time.Time
+	Success   bool
 }
