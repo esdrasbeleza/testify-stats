@@ -7,13 +7,8 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-func TestSampleMetrics(t *testing.T) {
-	suite.Run(t, new(SampleMetricsSuite))
-}
-
-type SampleMetricsSuite struct {
-	suite.Suite
-}
+// To test a suite, ironically, these tests can't be in a suite.Suite.
+// Bad things happen when you test a suite.Suite inside a suite!
 
 type suiteUnderTest struct {
 	suite.Suite
@@ -24,38 +19,53 @@ func (s *suiteUnderTest) Test_Something() {
 	s.Equal(1, 1)
 }
 
-func (s *SampleMetricsSuite) Test_ANewSuiteHasAnExecutionIdAndStartTime() {
+func Test_ANewSuiteHasAnExecutionIdAndStartTime(t *testing.T) {
 	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.SetupSuite()
 
-	s.NotEmpty(suiteUnderTest.Execution.Id)
-	s.NotZero(suiteUnderTest.Execution.Start)
-	s.Zero(suiteUnderTest.Execution.End)
-	s.NotNil(suiteUnderTest.Stats)
+	assert.NotEmpty(t, suiteUnderTest.Execution.Id)
+	assert.NotZero(t, suiteUnderTest.Execution.Start)
+	assert.Zero(t, suiteUnderTest.Execution.End)
+	assert.NotNil(t, suiteUnderTest.Stats)
 }
 
-func (s *SampleMetricsSuite) Test_TearDownSuiteUpdatesTheExecutionEndTime() {
+func Test_TearDownSuite_UpdatesTheExecutionEndTime(t *testing.T) {
 	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.TearDownSuite()
 
-	s.NotZero(suiteUnderTest.Execution.End)
+	assert.NotZero(t, suiteUnderTest.Execution.End)
 }
 
-func (s *SampleMetricsSuite) Test_BeforeTest_CreatesNewStats() {
+func Test_TearDownSuite_CallsCallbackIfDefined(t *testing.T) {
+	callbackWasCalled := false
+	suiteUnderTest := new(suiteUnderTest)
+	suiteUnderTest.OnFinish = func(execution Execution, stats map[string]Stats) {
+		callbackWasCalled = true
+		assert.Equal(t, suiteUnderTest.Execution, execution)
+		assert.Equal(t, suiteUnderTest.Stats, stats)
+	}
+
+	suiteUnderTest.SetupSuite()
+	suiteUnderTest.TearDownSuite()
+
+	assert.True(t, callbackWasCalled)
+}
+
+func Test_BeforeTest_CreatesNewStats(t *testing.T) {
 	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.SetupSuite()
 	suiteUnderTest.BeforeTest("mySuite", "myTest")
 
 	actualStats := suiteUnderTest.Stats["myTest"]
 
-	s.NotEmpty(actualStats.Id)
-	s.Equal("mySuite", actualStats.SuiteName)
-	s.Equal("myTest", actualStats.Testname)
-	s.NotZero(actualStats.Start)
-	s.Zero(actualStats.End)
+	assert.NotEmpty(t, actualStats.Id)
+	assert.Equal(t, "mySuite", actualStats.SuiteName)
+	assert.Equal(t, "myTest", actualStats.Testname)
+	assert.NotZero(t, actualStats.Start)
+	assert.Zero(t, actualStats.End)
 }
 
-func (s *SampleMetricsSuite) Test_AfterTest_UpdatesStats() {
+func Test_AfterTest_UpdatesStats(t *testing.T) {
 	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.SetupSuite()
 	suiteUnderTest.BeforeTest("mySuite", "myTest")
@@ -63,11 +73,9 @@ func (s *SampleMetricsSuite) Test_AfterTest_UpdatesStats() {
 
 	actualStats := suiteUnderTest.Stats["myTest"]
 
-	s.NotZero(actualStats.End)
+	assert.NotZero(t, actualStats.End)
 }
 
-// To test a suite, ironically, this test can't be in a suite.Suite.
-// Bad things happen when you test a suite.Suite inside a suite.
 func Test_RunningTheSuiteWillGenerateStats(t *testing.T) {
 	suiteToTest := new(suiteUnderTest)
 

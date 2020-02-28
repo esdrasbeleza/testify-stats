@@ -8,7 +8,8 @@ import (
 
 type SuiteWithMetrics struct {
 	Execution Execution
-	Stats     map[string]*Stats
+	Stats     map[string]Stats
+	OnFinish  func(Execution, map[string]Stats)
 }
 
 func (sm *SuiteWithMetrics) SetupSuite() {
@@ -18,24 +19,29 @@ func (sm *SuiteWithMetrics) SetupSuite() {
 		End:   time.Time{},
 	}
 
-	sm.Stats = make(map[string]*Stats)
+	sm.Stats = make(map[string]Stats)
 }
 
 func (sm *SuiteWithMetrics) TearDownSuite() {
 	sm.Execution.End = time.Now()
+
+	if sm.OnFinish != nil {
+		sm.OnFinish(sm.Execution, sm.Stats)
+	}
 }
 
 func (sm *SuiteWithMetrics) BeforeTest(suiteName, testName string) {
-	stats := &Stats{
+	sm.Stats[testName] = Stats{
 		Id:        uuid.New().String(),
 		SuiteName: suiteName,
 		Testname:  testName,
 		Start:     time.Now(),
 	}
-
-	sm.Stats[testName] = stats
 }
 
 func (sm *SuiteWithMetrics) AfterTest(suiteName, testName string) {
-	sm.Stats[testName].End = time.Now()
+	stats := sm.Stats[testName]
+	stats.End = time.Now()
+
+	sm.Stats[testName] = stats
 }
