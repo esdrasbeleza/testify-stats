@@ -23,7 +23,6 @@ func Test_ANewSuiteHasAnExecutionIdAndStartTime(t *testing.T) {
 	suiteUnderTest := new(suiteUnderTest)
 	suiteUnderTest.SetupSuite()
 
-	assert.NotEmpty(t, suiteUnderTest.Execution.Id)
 	assert.NotZero(t, suiteUnderTest.Execution.Start)
 	assert.Zero(t, suiteUnderTest.Execution.End)
 	assert.NotNil(t, suiteUnderTest.Stats)
@@ -81,7 +80,6 @@ func Test_RunningTheSuiteWillGenerateStats(t *testing.T) {
 
 	suite.Run(t, suiteToTest)
 
-	assert.NotEmpty(t, suiteToTest.Execution.Id)
 	assert.NotZero(t, suiteToTest.Execution.Start)
 	assert.NotZero(t, suiteToTest.Execution.End)
 	assert.NotNil(t, suiteToTest.Stats["Test_Something"])

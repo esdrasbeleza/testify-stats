@@ -14,7 +14,6 @@ type SuiteWithMetrics struct {
 
 func (sm *SuiteWithMetrics) SetupSuite() {
 	sm.Execution = Execution{
-		Id:    uuid.New().String(),
 		Start: time.Now(),
 		End:   time.Time{},
 	}
