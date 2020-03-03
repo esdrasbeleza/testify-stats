@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	testifystats "github.com/esdrasbeleza/testify-stats"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -16,23 +15,20 @@ func Test_RunSuite(t *testing.T) {
 
 type TestSuite struct {
 	suite.Suite
-	testifystats.SuiteWithMetrics
 }
 
-func (s *TestSuite) SetupSuite() {
-	s.SuiteWithMetrics.SetupSuite()
+func (s *TestSuite) HandleStats(suiteName string, stats *suite.SuiteStats) {
+	// In this example, we're creating a log file with the execution results.
+	filename := fmt.Sprintf("test_%d.log", time.Now().Unix())
+	file, _ := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	defer file.Close()
 
-	s.SuiteWithMetrics.OnFinish = func(e testifystats.Execution, s map[string]testifystats.Stats) {
-		// In this example, we're creating a log file with the execution results.
+	fmt.Fprintf(file, "Suite: %s\n", suiteName)
+	fmt.Fprintf(file, "Total time: %s\n\n", stats.EndTime.Sub(stats.StartTime).String())
 
-		filename := fmt.Sprintf("test_%d.log", time.Now().Unix())
-		file, _ := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		defer file.Close()
-
-		for testName, testStats := range s {
-			duration := testStats.End.Sub(testStats.Start)
-			fmt.Fprintf(file, "%s: %s ==> %v\n", testName, duration.String(), testStats.Success)
-		}
+	for testName, testStats := range stats.TestStats {
+		duration := testStats.EndTime.Sub(testStats.StartTime)
+		fmt.Fprintf(file, "%s: %s ==> %v\n", testName, duration.String(), testStats.Passed)
 	}
 }
 
@@ -48,4 +44,8 @@ func (s *TestSuite) TestThatTakes400ms() {
 
 func (s *TestSuite) TestThatIsQuick() {
 	s.Equal(1, 1)
+}
+
+func (s *TestSuite) TestThatFails() {
+	s.Equal(1, 2)
 }
