@@ -17,17 +17,17 @@ type TestSuite struct {
 	suite.Suite
 }
 
-func (s *TestSuite) HandleStats(suiteName string, stats *suite.SuiteStats) {
+func (s *TestSuite) HandleStats(suiteName string, stats *suite.SuiteInformation) {
 	// In this example, we're creating a log file with the execution results.
 	filename := fmt.Sprintf("test_%d.log", time.Now().Unix())
 	file, _ := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	defer file.Close()
 
 	fmt.Fprintf(file, "Suite: %s\n", suiteName)
-	fmt.Fprintf(file, "Total time: %s\n\n", stats.EndTime.Sub(stats.StartTime).String())
+	fmt.Fprintf(file, "Total time: %s\n\n", stats.End.Sub(stats.Start).String())
 
 	for testName, testStats := range stats.TestStats {
-		duration := testStats.EndTime.Sub(testStats.StartTime)
+		duration := testStats.End.Sub(testStats.Start)
 		fmt.Fprintf(file, "%s: %s ==> %v\n", testName, duration.String(), testStats.Passed)
 	}
 }

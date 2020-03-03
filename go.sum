@@ -4,6 +4,8 @@ github.com/esdrasbeleza/testify v1.5.2-0.20200303185548-24c9a7b8957f h1:dV824zaE
 github.com/esdrasbeleza/testify v1.5.2-0.20200303185548-24c9a7b8957f/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/esdrasbeleza/testify v1.5.2-0.20200303191309-5aa9c2aa7e5e h1:69z8Cp4xEqcOe0hMNbD9WALBk8uT+EdKwPPGOFMdvYw=
 github.com/esdrasbeleza/testify v1.5.2-0.20200303191309-5aa9c2aa7e5e/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
+github.com/esdrasbeleza/testify v1.5.2-0.20200303192205-5830f054c3ad h1:mX5Qj78UCl/XlP1R8VlfrY8peYJgeYvkKsMA+tsMN4I=
+github.com/esdrasbeleza/testify v1.5.2-0.20200303192205-5830f054c3ad/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0 h1:4G4v2dO3VZwixGIRoQ5Lfboy6nUhCyYzaqnIAPPhYs4=
